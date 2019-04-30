@@ -11,4 +11,5 @@ public class Message {
 	public static String GroupMsg = "GROMSG";
 	public static String UpdateGrLMsg = "UPDATEGL";
 	public static String ExitGroupChatMsg = "EXITGC";
+	public static String BroadcastMsg = "BRDCASTMSG";
 }

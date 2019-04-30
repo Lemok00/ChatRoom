@@ -129,7 +129,7 @@ public class Client extends JFrame implements Runnable {
 					ResetName();
 				} else if (msgs[0].equals(Message.LogoutMsg)) {
 					if (msgs[1].equals(clientName)) {
-						break;
+						SelfLogout();
 					} else {
 						OthersLogout(msgs[1]);
 					}
@@ -141,6 +141,8 @@ public class Client extends JFrame implements Runnable {
 					GroupChatIn(msgs[1], msgs[2], msgs[3]);
 				} else if (msgs[0].equals(Message.UpdateGrLMsg)) {
 					UpdateGrList(msgs[1], msgs[2]);
+				} else if (msgs[0].equals(Message.BroadcastMsg)) {
+					new JOptionPane().showMessageDialog(self, msgs[1], "系统广播", JOptionPane.PLAIN_MESSAGE);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -195,6 +197,24 @@ public class Client extends JFrame implements Runnable {
 		clientName = getClientName();
 		pStream.println(Message.LoginMsg + "#" + clientName);
 		this.setTitle(clientName);
+	}
+
+	public void SelfLogout() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				dispose();
+			}
+		}).start();
+		new JOptionPane().showMessageDialog(self, "系统强制下线，窗口将在5秒后关闭", "系统消息", JOptionPane.ERROR_MESSAGE);
+		System.exit(0);
 	}
 
 	public void OthersLogout(String msg) {
@@ -282,8 +302,8 @@ public class Client extends JFrame implements Runnable {
 		Vector uVector = new Vector<>();
 		String[] names = ml.split("@");
 		for (String name : names) {
-			if(!name.equals(clientName)) {
-			uVector.add(name);
+			if (!name.equals(clientName)) {
+				uVector.add(name);
 			}
 		}
 		System.out.println(ml);
@@ -390,7 +410,7 @@ class groupChat extends JFrame {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				client.pStream.println(Message.ExitGroupChatMsg+"#"+grChatName+"#"+myName);
+				client.pStream.println(Message.ExitGroupChatMsg + "#" + grChatName + "#" + myName);
 			}
 		});
 		jPanel.setLayout(new BorderLayout());
